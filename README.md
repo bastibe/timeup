@@ -60,6 +60,16 @@ Type=simple
 ExecStart=/path/to/timeup.py -l /path/to/lockfile.pid /save/backups/here/ /back/this/up/ /and/this/too/
 ```
 
+Since the first backup will take some time, let's run it manually first:
+```
+systemctl start timeup.service
+```
+
+Then enable the timer with
+```
+systemctl enable timeup.timer
+```
+
 ### launchctl (macOS)
 
 Under Construction...
