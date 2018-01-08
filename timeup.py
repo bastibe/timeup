@@ -91,7 +91,7 @@ def create_backup(destination, directories, fileformat):
 
     try:
         subprocess.check_call(args + [str(d) for d in directories] + [str(new_backup)])
-    except CalledProcessError:
+    except subprocess.CalledProcessError:
         shutil.rmtree(destination, ignore_errors=True)
         raise
 
@@ -172,9 +172,8 @@ def main():
     args = parser.parse_args()
 
     with LockFile(args.lockfile):
-        # create_backup(args.destination, args.target, args.format)
-        # prune_backups(args.destination, args.hours, args.days, args.weeks, args.format)
-        pass
+        create_backup(args.destination, args.target, args.format)
+        prune_backups(args.destination, args.hours, args.days, args.weeks, args.format)
 
 
 if __name__ == "__main__":
