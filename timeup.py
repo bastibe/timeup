@@ -10,9 +10,15 @@ import shutil
 
 class LockFile:
     def __init__(self, path):
-        self.path = path
+        if str(path) == '__donotlock__': # no lock file given
+            self.path = None
+        else:
+            self.path = path
 
     def __enter__(self):
+        if self.path is None:
+            return
+
         if self.path.exists():
             with self.path.open() as f:
                 content = f.read()
@@ -37,6 +43,9 @@ class LockFile:
             f.write(str(os.getpid()))
 
     def __exit__(self, *args):
+        if self.path is None:
+            return
+
         self.path.unlink()
 
 
@@ -149,7 +158,7 @@ def main():
     parser.add_argument('--format', action='store', type=str, default="%Y-%m-%dT%H:%M:%S",
                         help="`strftime` format string for backups. "
                         "Default is ISO 8601: `%%Y-%%m-%%dT%%H:%%M:%%S`.")
-    parser.add_argument('-l', '--lockfile', action='store', type=pathlib.Path, required=True,
+    parser.add_argument('-l', '--lockfile', action='store', type=pathlib.Path, default='__donotlock__',
                         help="Makes sure that only one timeup is running at a time.")
     parser.add_argument('destination', type=pathlib.Path, action='store',
                         help="Where backups are stored")
