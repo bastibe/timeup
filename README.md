@@ -39,7 +39,7 @@ You need to specify a lock file to ensure that only one instance of timeup is ru
 create two files in `/etc/systemd/system/`:
 
 timeup.timer:
-```
+```ini
 [Unit]
 Description=Run hourly backup
 
@@ -51,7 +51,7 @@ WantedBy=multi-user.target
 ```
 
 timeup.service:
-```
+```ini
 [Unit]
 Description=Run hourly backup
 
