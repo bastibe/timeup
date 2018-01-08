@@ -70,11 +70,48 @@ Then enable the timer with
 systemctl enable timeup.timer
 ```
 
-### launchctl (macOS)
+### launchd (macOS)
 
-Under Construction...
+Write a configuration file in `~/Library/LaunchAgents/`:
+
+timeup.plist:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>timeup</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/path/to/timeup.py</string>
+        <string>-l</string>
+        <string>/path/to/lockfile.pid</string>
+        <string>/save/backups/here/</string>
+        <string>/back/this/up/</string>
+        <string>/and/this/too/</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+</dict>
+</plist>
+```
+
+Then load the agent file:
+```
+launchctl load ~/Library/LaunchAgents/timeup.plist
+```
+
+And start the service once:
+```
+launchctl start timeup
+```
 
 ## FAQ
 
 - Does timeup work on Windows?  
-  no
+  no.  
+  The required changes are probably not big, though, and I'd be happy to merge a pull request.
