@@ -63,3 +63,8 @@ ExecStart=/path/to/timeup.py -l /path/to/lockfile.pid /save/backups/here/ /back/
 ### launchctl (macOS)
 
 Under Construction...
+
+## FAQ
+
+- Does timeup work on Windows?  
+  no
