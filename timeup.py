@@ -6,6 +6,7 @@ import subprocess
 import pathlib
 import argparse
 import shutil
+import errno
 
 
 class LockFile:
@@ -32,9 +33,13 @@ class LockFile:
             try:
                 # will not work on Windows:
                 os.kill(pid, 0)
-            except OSError:
-                # lockfile exists, but no process is running
-                self.path.unlink()
+            except OSError as err:
+                if err.errno == errno.ESRCH:
+                    # lockfile exists, but no process is running
+                    self.path.unlink()
+                else:
+                    # lockfile exists, and process is running
+                    raise RuntimeError("Another instance of timeup is running already")
             else:
                 # lockfile exists, and process is running
                 raise RuntimeError("Another instance of timeup is running already")
@@ -167,8 +172,9 @@ def main():
     args = parser.parse_args()
 
     with LockFile(args.lockfile):
-        create_backup(args.destination, args.target, args.format)
-        prune_backups(args.destination, args.hours, args.days, args.weeks, args.format)
+        # create_backup(args.destination, args.target, args.format)
+        # prune_backups(args.destination, args.hours, args.days, args.weeks, args.format)
+        pass
 
 
 if __name__ == "__main__":
