@@ -30,7 +30,9 @@ After 48 hours, it will start deleting older backups so that only one backup per
 
 You can customize the number of hours where all backups are kept using the `--hours` switch, the number of days for daily backups with `--days`, the number of weeks for weekly backups with `--weeks`. If any of these is set to `-1`, it will keep all of them. By default, all weekly backups are kept.
 
-You need to specify a lock file to ensure that only one instance of timeup is running at any one time. You can store this file anywhere you want, as long as you have write access to that location. If no lock file is given, timeup will not lock, which might lead to errors if more than one instance is running at the same time.
+You need to specify a lock file with `-l` to ensure that only one instance of timeup is running at any one time. You can store this file anywhere you want, as long as you have write access to that location. If no lock file is given, timeup will not lock, which might lead to errors if more than one instance is running at the same time.
+
+If you want to change the directory names, you can use `--format`, and supply any `strftime`-compatible format string. This is particularly necessary on file systems that don't support `:` in file names.
 
 ## Schedule
 
@@ -72,6 +74,12 @@ systemctl enable timeup.timer
 
 ### launchd (macOS)
 
+On macOS, there are a few issues:
+- The file system does not support `:` in file names
+- macOS does not support Python 3
+
+Thus, we need to change the directory name pattern, and we need to call a user-installed python3.
+
 Write a configuration file in `~/Library/LaunchAgents/`:
 
 timeup.plist:
@@ -84,9 +92,12 @@ timeup.plist:
     <string>timeup</string>
     <key>ProgramArguments</key>
     <array>
+        <string>/path/to/python3</string>
         <string>/path/to/timeup.py</string>
         <string>-l</string>
         <string>/path/to/lockfile.pid</string>
+        <string>--format</string>
+        <string>%Y-%m-%dT%H.%M.%S</string>
         <string>/save/backups/here/</string>
         <string>/back/this/up/</string>
         <string>/and/this/too/</string>
@@ -110,8 +121,20 @@ And start the service once:
 launchctl start timeup
 ```
 
+If backups are not being created, check in Console.app if there is an error, or add
+
+```xml
+<key>StandardErrorPath</key>
+<string>/path/to/error-file</string>
+```
+
+to the configuration file.
+
 ## FAQ
 
 - Does timeup work on Windows?  
   no.  
   The required changes are probably not big, though, and I'd be happy to merge a pull request.
+
+- Does timeup work with Python 2?
+  no.
