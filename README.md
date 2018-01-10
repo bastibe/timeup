@@ -136,7 +136,11 @@ to the configuration file.
 
 - Does timeup work on Windows?  
   no.  
-  The required changes are probably not big, though, and I'd be happy to merge a pull request.
+  Apparently, there are Windows versions of `rsync` available, most
+  notably in msys2, cygwin, and WSL. I know that at least
+  `os.kill(pid, 0)` does not work on Windows, though. This part could
+  simply be disabled without much trouble. Pull Requests are welcome.
 
-- Does timeup work with Python 2?
-  maybe.
+- Does timeup work with Python 2?  
+  maybe.  
+  It seems to work on my Mac, but I haven't tested it thoroughly.
