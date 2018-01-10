@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import os
 from datetime import datetime, timedelta
@@ -7,6 +7,10 @@ import pathlib
 import argparse
 import shutil
 import errno
+
+import sys
+if sys.version_info < (3, 0):
+    str = unicode
 
 
 class LockFile:
@@ -44,7 +48,7 @@ class LockFile:
                 # lockfile exists, and process is running
                 raise RuntimeError("Another instance of timeup is running already")
 
-        with self.path.open('x') as f:
+        with self.path.open('w') as f:
             f.write(str(os.getpid()))
 
     def __exit__(self, *args):
@@ -91,8 +95,9 @@ def create_backup(destination, directories, fileformat):
 
     try:
         subprocess.check_call(args + [str(d) for d in directories] + [str(new_backup)])
-    except subprocess.CalledProcessError:
-        shutil.rmtree(destination, ignore_errors=True)
+    except Exception:
+        # remove partial backup:
+        shutil.rmtree(new_backup, ignore_errors=True)
         raise
 
 

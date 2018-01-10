@@ -76,9 +76,8 @@ systemctl enable timeup.timer
 
 On macOS, there are a few issues:
 - The file system does not support `:` in file names
-- macOS does not support Python 3
 
-Thus, we need to change the directory name pattern, and we need to call a user-installed python3.
+Thus, we need to change the directory name pattern.
 
 Write a configuration file in `~/Library/LaunchAgents/`:
 
@@ -92,7 +91,6 @@ timeup.plist:
     <string>timeup</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/path/to/python3</string>
         <string>/path/to/timeup.py</string>
         <string>-l</string>
         <string>/path/to/lockfile.pid</string>
@@ -137,4 +135,4 @@ to the configuration file.
   The required changes are probably not big, though, and I'd be happy to merge a pull request.
 
 - Does timeup work with Python 2?
-  no.
+  maybe.
