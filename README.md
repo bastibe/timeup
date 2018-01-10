@@ -75,11 +75,15 @@ systemctl enable timeup.timer
 ### launchd (macOS)
 
 On macOS, there are a few issues:
+- macOS ships only Python 2.7, which lacks a required library
 - The file system does not support `:` in file names
 
-Thus, we need to change the directory name pattern.
+Thus, we need to install the missing library:
+```
+sudo /usr/bin/easy_install pathlib
+```
 
-Write a configuration file in `~/Library/LaunchAgents/`:
+And write a configuration file in `~/Library/LaunchAgents/` that changes the naming pattern:
 
 timeup.plist:
 ```xml
