@@ -100,7 +100,7 @@ def create_backup(destination, directories, fileformat, rsyncparams):
         subprocess.check_call(args + [str(d) for d in directories] + [str(new_backup)])
     except Exception:
         # remove partial backup:
-        if sys.version_info < (3, 0) and sys.platform == 'linux' and os.environ['LANG'] == 'C':
+        if sys.version_info < (3, 0):
             # https://bugs.python.org/issue24672
             shutil.rmtree(bytes(new_backup), ignore_errors=True)
         else:
@@ -153,7 +153,7 @@ def prune_backups(destination, hours_to_keep_all, days_to_keep_dailies, weeks_to
     delete = set(all_backups.keys()) - keep
 
     for d in delete:
-        if sys.version_info < (3, 0) and sys.platform == 'linux' and os.environ['LANG'] == 'C':
+        if sys.version_info < (3, 0):
             # https://bugs.python.org/issue24672
             shutil.rmtree(bytes(all_backups[d]), ignore_errors=True)
         else:
