@@ -181,7 +181,7 @@ def main():
                         "Default is ISO 8601: `%%Y-%%m-%%dT%%H:%%M:%%S`.")
     parser.add_argument('-l', '--lockfile', action='store', type=pathlib.Path, default='__donotlock__',
                         help="Makes sure that only one timeup is running at a time.")
-    parser.add_argument('--rsyncparams', action='append', type='str', default=[])
+    parser.add_argument('--rsyncparams', action='append', type=str, default=[])
     parser.add_argument('destination', type=pathlib.Path, action='store',
                         help="Where backups are stored")
     parser.add_argument('target', type=pathlib.Path, nargs='+',
