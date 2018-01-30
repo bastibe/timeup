@@ -74,7 +74,7 @@ def all_backup_dirs(destination, fileformat):
     return dirs
 
 
-def create_backup(destination, directories, fileformat):
+def create_backup(destination, directories, fileformat, rsyncparams):
     """Create a new backup of `directories` in `destination`, naming the
     backup according to `fileformat`, and hard-linking to the most
     recent existing backup.
@@ -92,6 +92,9 @@ def create_backup(destination, directories, fileformat):
     if all_backups:
         newest_backup = all_backups[max(all_backups.keys())]
         args += ['--link-dest', str(newest_backup)]
+
+    if rsyncparams:
+        args += rsyncparams
 
     try:
         subprocess.check_call(args + [str(d) for d in directories] + [str(new_backup)])
@@ -178,6 +181,7 @@ def main():
                         "Default is ISO 8601: `%%Y-%%m-%%dT%%H:%%M:%%S`.")
     parser.add_argument('-l', '--lockfile', action='store', type=pathlib.Path, default='__donotlock__',
                         help="Makes sure that only one timeup is running at a time.")
+    parser.add_argument('--rsyncparams', action='append', type='str', default=[])
     parser.add_argument('destination', type=pathlib.Path, action='store',
                         help="Where backups are stored")
     parser.add_argument('target', type=pathlib.Path, nargs='+',
@@ -185,7 +189,7 @@ def main():
     args = parser.parse_args()
 
     with LockFile(args.lockfile):
-        create_backup(args.destination, args.target, args.format)
+        create_backup(args.destination, args.target, args.format, args.rsyncparams)
         prune_backups(args.destination, args.hours, args.days, args.weeks, args.format)
 
 
